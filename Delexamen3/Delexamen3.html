@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam </title>
+    <link href="exam3.css" rel="stylesheet" media="all">
+</head>
+<body>
+    <main>
+        <h1>Fargepaletten</h1>
+        <canvas id="colorspace"></canvas>
+        <nav>
+            <button id="addColor">Legg till en farge</button>
+            <button id="emptyArray">Tilbakestill fargene</button>
+            <button id="generateAll">Generer 10 nye farger</button>
+        </nav>
+        <h2>Endre farger:</h2>
+        <section>
+            <p>Bytt ut fargen i rute <select id="colorSquareIndex">
+                <option value="0">1</option>
+                <option value="1">2</option>
+                <option value="2">3</option>
+                <option value="3">4</option>
+                <option value="4">5</option>
+                <option value="5">6</option>
+                <option value="6">7</option>
+                <option value="7">8</option>
+                <option value="8">9</option>
+                <option value="9">10</option>
+            </select> med #<input type="text" id="newColor" /> <button id="saveNewColor">Lagre ny farge</button></p>
+        </section>
+    </main>
+    
+
+    <script>
+        //Configure canvas
+        const canvas = document.getElementById("colorspace")
+        canvas.width = 1000
+        canvas.height = 100
+        const ctx = canvas.getContext("2d")
+
+        /* --- YOUR FUNCTIONALITY AND CODE GOES HERE --- */
+        
+        //En array som samlar färgerna.
+        let colors = [];
+
+        //En funktion för att generera en random färg
+        function randomColor() {
+
+            //En sträng som innehåller alla möjliga tecken i en hex-färg, dvs 0-9 och a-f
+            const string = "0123456789ABCDEF";
+            //Satte color till # eftersom hex typiskt startar med detta efterföljt av 6 tecken.
+            let color = "#";
+
+            //En for loop som kör 6 gånger eftersom det är 6 tecken i en hex färg.
+            for (let teller = 0; teller < 6; teller++) {
+                //Math.random retunerar ett tal mellan 0 och 1. Eftersom jag behöver heltal och värden större än mellan 0-1 använder jag Math.floor som avrundar ner till närmaste heltal.
+                //Jag gångrar därför Math.random med 16 för att Math.floor ska avrunda det ner till ett värde mellan 0-15.
+                color += string[Math.floor(Math.random() * 16)];
+            }
+            //När loopen har körts 6 gånger retuneras den färdiga färgen och visas när funktionen anropas.
+            return color;
+        }
+
+        //Sparar HTML-elementet
+        const addBtn = document.getElementById("addColor")
+
+        //Kopplar en eventlistener som lyssnar efter klick på HTML-elementet och kör funktionen addNewColor
+        addBtn.addEventListener("click", addNewColor)
+
+        //Funktionen som kallas i eventlistenern
+        function addNewColor() {
+            //Gör ett if-test för att se om det är 10 eller fler färger i arrayen.
+            if (colors.length >= 10) {
+                //Om det är 10 eller fler blir knappen disabled dvs inte längre tryckbar.
+                addBtn.disabled = true;
+
+            //Om kraven uppfylls ska funktionen generera en ny random färg.
+            } else {
+                //Här genereras den nya färgen genom loopen randomColor.
+                const generatedColor = randomColor();
+                //Jag pushar den senaste färgen till min array.
+                colors.push(generatedColor);
+
+                //Loggar alla färger i arrayen när knappen "Legg til en farge" trycks på.
+                console.log(colors);
+            }
+        }
+
+        //Sparar HTML-elementet.
+        const tenColorsBtn = document.getElementById("generateAll");
+
+        //Kopplar en eventlistener som lyssnar efter klick på HTML-elementet och kör funktionen tenNewColors
+        tenColorsBtn.addEventListener("click", tenNewColors);
+
+        function tenNewColors() {
+            //Töm arrayen.
+            colors = [];
+
+            //Denna loopen genererar 10 nya random färger om vilkoret att det index är mindre än 10.
+            for (let index = 0; index < 10; index++) {
+                //Pushar funktionen
+                colors.push(randomColor());
+            }
+
+            //Gör "Legg til en farge"- knappen inte längre tryckbar.
+            addBtn.disabled = true;
+        }
+
+        //Sparar HTML-elementen
+        const saveColorBtn = document.getElementById("saveNewColor");
+        const colorSquare = document.getElementById("colorSquareIndex");
+        const newColorInput = document.getElementById("newColor");
+
+        //Lägger till en eventlistener som lyssnar på knappen "Lagre ny farge" och kör funktionen saveColor.
+        saveColorBtn.addEventListener("click", saveColor);
+
+        function saveColor() {
+
+            //Hämtar valgt nummer från drop down menyn.
+            const indexNumber = Number(colorSquare.value);
+
+            //Lägger till # innan hexkoden som användaren skriver i input fältet för att få en giltig hexkod.
+            const colorValue = "#" + newColorInput.value;
+
+            //Ett if-test för att se om det finns några rutor att ändra på.
+            if (colors.length === 0) {
+                //Finns det inga rutor visas detta meddelande.
+                alert("Det er ingen firkanter som kan bytte farge enda.");
+
+                return;
+            }
+
+            //Variabler för att hålla värdet på första och sista möjliga ruta. Det är satt till -1 för att matkera att det inte är någon färg från början.
+            let firstColor = -1;
+            let lastColor = -1;
+
+            //En loop genom colors arrayen för att hitta rutans färg och värde.
+            colors.forEach((color, index) => {
+            
+                //Ett if-test för att kontrollera om firstColor är -1 och om den aktuella rutan har en färg. När den första färgade rutan hittas så sparas värdet i firstColor. 
+                if (firstColor === -1 && color !== undefined) {
+                    firstColor = index; 
+                }
+                //Ett if-test som hittar sista rutan med färg. Efter att loopen har körts och en rutan har identifierats så sparas värdet i lastColor.
+                if (color !== undefined) {
+                    lastColor = index;
+                }
+            });
+
+            //Ett if-test för att se om den valde rutan inte har en färg.
+            if (colors[indexNumber] === undefined) {
+
+                //If-test för att se om det inte finns någon ruta. Finns det inte så ska detta meddelande komma upp.
+               if (firstColor === -1) {
+                  alert("Det er ingen firkanter som kan bytte farge enda.");
+                
+                } else {
+                    //Finns det en eller flera rutor på canvasen, men användaren har valt ett nummer som inte finns, så kommer detta meddelande att visas.
+                    alert(`Du har valgt firkant ${indexNumber + 1}. Denne har ikke en farge enda, og kan derfor ikke byttes. 
+                    Du kan endre farge på firkant ${firstColor + 1} til ${lastColor + 1}.`);
+                }
+                return;
+            }
+
+            //2.b. Hjälp-dokumentet
+            //If-test för att se om det finns en giltig hex-kod.
+            if (!/^#[0-9A-Fa-f]{6}$/.test(colorValue)) {
+                //Om koden inte är giltig ska detta meddelande visas.
+                alert(`Du har skrevet ${colorValue}. Dette er ikke en gyldig fargekode.`);
+                return;
+            }
+            
+            //Om input-fältet är tomt, men lagre-knappen har trycks ändå, ska detta meddelande visas för användaren.
+            if (colorValue === "#") {
+              
+                alert("Du har ikke skrevet noen fargekode enda.");
+            
+                return;
+            }
+
+            //Uppdaterar värdet, alltså färgen, i arrayen colors på en specifik plats (rutnr). Rutan uppdateras med värdet som användaren har skrivit i input-fältet.
+            colors[indexNumber] = colorValue;
+
+        }
+
+
+        //requestAnimationFrame
+        const requestAnimationFrame = window.requestAnimationFrame || window.msRequestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame
+        function renderCanvas() {
+
+            // Töm canvasen innan ny ritning.
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+           
+
+            // Bredden på varje färgruta får jag genom att denna canvasen på 10 eftersom det ska få plats max 10 rutor.
+            const squareWidth = canvas.width / 10;
+
+            // Loopa igenom "colors"-arrayen för att rita rutor och text.
+            for (let index = 0; index < colors.length; index++) {
+
+                //Färgrutan
+                //Startar en path eller "stig" för att definera vart min form startar.
+                ctx.beginPath();
+                //Gör en geometrisk väg som formar kvadraterna. .rect står för (x, y, width, height). squareWidth är en variabel som representerar kvadratens bredd.
+                //Jag tar index * squareWidth för att x ska flytta sig baserat på värdet av index och bredden på kvadraterna. Detta gör jag för att kvadraterna inte ska överlappa varandra, utan istället lägga sig brevid varandra.
+                //Exempelvis om index är 0 så kommer den första rektangeln starta på position noll. Skulle index vara 1, kommer nästa rektangel starta efter squareWidth som alltså är kvadratens bredd, vilket betyder att kvadraten alltså kommer att lägga sig sida om sida med den första kvadraten.
+                //0 sätter jag eftersom jag vill ha den vertikala nollpunkten, dvs att kvadraten börjar från toppen av canvasen.
+                //canvas.height är kvadratens höjd som ska va samma som canvas höjden.
+                ctx.rect(index * squareWidth, 0, squareWidth, canvas.height);
+                //Lägger på färgen som genereras från colors.
+                ctx.fillStyle = colors[index];
+                //Visar färgen i kvadraten.
+                ctx.fill();
+                //Stänger stigen för att definera vart formen slutar.
+                ctx.closePath();
+
+                //"Bakgrundsrektangeln" till färgnamnet.
+                //Startar en path eller "stig" för att definera vart min form startar.
+                ctx.beginPath();
+                //Här gör jag till en början samma som den över, men jag sätter en fast bredd på 80 pixlar och en fast höjd på 28 pixlar.
+                ctx.rect(index * squareWidth, 0, 80, 28);
+                //Lägger till vit färg.
+                ctx.fillStyle = "#fff"; 
+                //Visar färgen i rektangeln.
+                ctx.fill();
+                //Stänger stigen för att definera vart formen slutar.
+                ctx.closePath();
+
+                //Färgnamnet på den vita rektangeln.
+                //Textstorlek och font.
+                ctx.font = "14px Arial";
+                //Texten är svart.
+                ctx.fillStyle = "#000"; 
+                //.fillText står för (text, x, y). colors[index] tar fram hex värdet som ska visas i rutan.
+                //Jag tar återigen index * squareWidth för att göra samma förskjutning av rektanglarna. Sen tar jag +10 pixlar för att texten ska börja lite längre in.
+                //Jag tar 20 pixlar på y för att texten ska börja lite längre ner från kanten.
+                ctx.fillText(colors[index], index * squareWidth + 10, 20); 
+
+                //Startar en path eller "stig" för att definera vart min form startar.
+                ctx.beginPath();
+                //Jag börjar på samma sätt men sen plussar jag på squareWidth och tar minus 30 pixlar för att justera ytterliggare hur långt till höger rutan ska vara.
+                //Sen fortsätter jag att justera höjd och bredd med 30 pixlar.
+                ctx.rect(index * squareWidth + squareWidth - 30, canvas.height - 30, 30, 30); 
+                //Lägger till vit färg.
+                ctx.fillStyle = "#fff";
+                //Visar färgen i rektangeln.
+                ctx.fill();
+                //Stänger stigen för att definera vart formen slutar.
+                ctx.closePath();
+
+                //Nummeret på rutan
+                //Textstorlek och font.
+                ctx.font = "18px Arial";
+                //Texten ska ha samma färg som själva kvadraten.
+                ctx.fillStyle = colors[index]; 
+                //Jag börjar med att justera texten genom att skriva index + 1. Detta eftersom indexet börjar på 0, men jag vill ju skriva ut det som om att det börjar på 1.
+                //Sen gångrar jag med squareWidth för att på samma sätt som innan förskjuta texten för varje kvadrat som blir. Minus 19 pixlar tar jag för att finjustera textens placering. Samma med canvas -10 pixlar.
+                ctx.fillText(index + 1, (index + 1) * squareWidth - 19, canvas.height - 10); 
+
+            }          
+            
+            //requestAnimationFrame ger oss möjligheten att anropa en funktion som manipulerar vad som ska ritas innan webbläsaren ritar nästa bildruta.
+            requestAnimationFrame(renderCanvas)
+        }
+
+        //Initial running of drawing canvas
+        renderCanvas()
+
+        //Sparar HTML-elementet
+        const resetBtn = document.getElementById("emptyArray");
+
+        //Gör att när man klickar på knappen "Tillbakestill fargene" så körs funktionen resetColors.
+        resetBtn.addEventListener("click", resetColors);
+
+        function resetColors() {
+            //Tömmer arrayen med färger.
+            colors = [];
+            //Kontroll log för felsökning.
+            console.log('Colors array after reset:', colors); 
+
+            //Gör att knappen "Legg til en farge" fungerar igen.
+            document.getElementById("addColor").disabled = false;
+    
+            //Rensar canvasen.
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+
+    </script>
+</body>
+</html>
