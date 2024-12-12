@@ -205,14 +205,6 @@
             //Lägger till # innan hexkoden som användaren skriver i input fältet för att få en giltig hexkod.
             const colorValue = "#" + newColorInput.value;
 
-            //Ett if-test för att se om det finns några rutor att ändra på.
-            if (colors.length === 0) {
-                //Finns det inga rutor visas detta meddelande.
-                alert("Det er ingen firkanter som kan bytte farge enda.");
-
-                return;
-            }
-
             //Variabler för att hålla värdet på första och sista möjliga ruta. Det är satt till -1 för att matkera att det inte är någon färg från början.
             let firstColor = -1;
             let lastColor = -1;
@@ -245,6 +237,14 @@
                 return;
             }
 
+            //Om input-fältet är tomt, men lagre-knappen har trycks ändå, ska detta meddelande visas för användaren.
+            if (colorValue === "#") {
+              
+                alert("Du har ikke skrevet noen fargekode enda.");
+          
+                return;
+            }
+
             //2.b. Hjälp-dokumentet
             //If-test för att se om det finns en giltig hex-kod.
             if (!/^#[0-9A-Fa-f]{6}$/.test(colorValue)) {
@@ -253,13 +253,6 @@
                 return;
             }
             
-            //Om input-fältet är tomt, men lagre-knappen har trycks ändå, ska detta meddelande visas för användaren.
-            if (colorValue === "#") {
-              
-                alert("Du har ikke skrevet noen fargekode enda.");
-            
-                return;
-            }
 
             //Uppdaterar värdet, alltså färgen, i arrayen colors på en specifik plats (rutnr). Rutan uppdateras med värdet som användaren har skrivit i input-fältet.
             colors[indexNumber] = colorValue;
