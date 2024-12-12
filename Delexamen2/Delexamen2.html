@@ -104,7 +104,7 @@
         document.getElementById("incomingequity").innerHTML = equity
         let balance = 0;    //Startbalanse for utregning av utgifter og inntekter i november
 
-        //Jag startar en teller som börjar på 0 och fortsätter genom hela books.length, som som alltså har värdet 5 i detta fall. Sen använder jag en så kallad inkrementerings-operator "teller ++", som lägger + 1 i variabelen för varje runda i loopen.
+        //Jag startar en teller som börjar på 0 och fortsätter genom hela books.length, som alltså har värdet 5 i detta fall. Sen använder jag en så kallad inkrementerings-operator "teller ++", som lägger + 1 i variabelen för varje runda i loopen.
         //Sen tar jag variabeln balance som har värdet 0 plussar på min teller som ska gå i genom arrayen books. Jag hänvisar sen till amount för att specificera vilket objekt jag vill att tellern ska räkna ut.
         for(let teller = 0; teller < books.length; teller++) {
             balance += books[teller].amount;
@@ -146,6 +146,7 @@
              alert("Vennligst fyll ut oppgavetekst.");
 
             } else{
+              // Om input värdet är giltigt så pushas oppgaven till listan.
               todos.push({ text: taskText, status: "To do" });
               
              //Tar bort texten från input-fältet efter att man lagrat en task.

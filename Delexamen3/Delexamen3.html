@@ -205,7 +205,7 @@
             //Lägger till # innan hexkoden som användaren skriver i input fältet för att få en giltig hexkod.
             const colorValue = "#" + newColorInput.value;
 
-            //Variabler för att hålla värdet på första och sista möjliga ruta. Det är satt till -1 för att matkera att det inte är någon färg från början.
+            //Variabler för att hålla värdet på första och sista möjliga ruta. Det är satt till -1 för att markera att det inte är någon färg från början.
             let firstColor = -1;
             let lastColor = -1;
 
@@ -269,8 +269,6 @@
         function resetColors() {
             //Tömmer arrayen med färger.
             colors = [];
-            //Kontroll log för felsökning.
-            console.log('Colors array after reset:', colors); 
 
             //Gör att knappen "Legg til en farge" fungerar igen.
             document.getElementById("addColor").disabled = false;
